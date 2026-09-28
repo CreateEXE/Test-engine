@@ -7,16 +7,10 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.android.filament.utils.Utils
 import com.createexe.testengine.engine.EngineView
+import com.google.android.filament.utils.Utils
 
 class MainActivity : Activity() {
-
-    companion object {
-        init {
-            Utils.init()
-        }
-    }
 
     private lateinit var engine: EngineView
     private lateinit var status: TextView
@@ -67,6 +61,7 @@ class MainActivity : Activity() {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     type = "*/*"
                     addCategory(Intent.CATEGORY_OPENABLE)
+                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
                 }
                 startActivityForResult(intent, REQUEST_VRM)
             }
@@ -76,6 +71,7 @@ class MainActivity : Activity() {
             status,
             LinearLayout.LayoutParams(0, -2, 1f)
         )
+
         controls.addView(walk)
         controls.addView(load)
 
@@ -101,12 +97,10 @@ class MainActivity : Activity() {
             return
         }
 
-        val uri = data.data!!
-
         try {
-            val bytes = contentResolver.openInputStream(uri)?.use {
-                it.readBytes()
-            }
+            val bytes = contentResolver
+                .openInputStream(data.data!!)
+                ?.use { it.readBytes() }
 
             if (bytes == null || bytes.isEmpty()) {
                 status.text = "VRM LOAD FAILED — EMPTY FILE"
@@ -122,7 +116,8 @@ class MainActivity : Activity() {
             }
 
         } catch (e: Exception) {
-            status.text = "VRM LOAD FAILED: ${e.message}"
+            status.text =
+                "VRM LOAD FAILED — ${e.message ?: "unknown error"}"
         }
     }
 
@@ -143,5 +138,9 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQUEST_VRM = 9001
+
+        init {
+            Utils.init()
+        }
     }
 }
