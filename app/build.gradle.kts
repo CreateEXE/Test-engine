@@ -24,3 +24,8 @@ android {
         jvmTarget = "17"
     }
 }
+
+dependencies {
+    implementation("com.google.android.filament:filament-android:1.53.0")
+    implementation("com.google.android.filament:filament-utils-android:1.53.0")
+}
