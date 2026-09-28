@@ -1,7 +1,5 @@
 package com.createexe.testengine.world
 
-import android.opengl.GLES20
-
 class GothicBedroom {
 
     data class Body(
@@ -47,9 +45,5 @@ class GothicBedroom {
                 body.moving = false
             }
         }
-    }
-
-    fun render() {
-        GLES20.glLineWidth(2f)
     }
 }
